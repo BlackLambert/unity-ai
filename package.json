@@ -1,0 +1,24 @@
+{
+  "name": "com.sbaier.ai",
+  "version": "1.0.0",
+  "displayName": "Unity AI",
+  "description": "AI logic",
+  "unity": "2021.2",
+  "unityRelease": "",
+  "documentationUrl": "https://github.com/BlackLambert/unity-ai",
+  "changelogUrl": "https://github.com/BlackLambert/unity-ai/releases/tag/v1.0.0",
+  "licensesUrl": "",
+  "dependencies": {
+    "com.sbaier.unitydi": "https://github.com/BlackLambert/unity-di-package.git#v1.4.3",
+    "com.sbaier.core": "https://github.com/BlackLambert/unity-core.git#v1.0.2"
+  },
+ "keywords": [
+    "ai",
+    "behaviour tree"
+  ],
+  "author": {
+    "name": "Sebastian Baier",
+    "email": "sebastian.baier93@hotmail.de",
+    "url": ""
+  }
+}
