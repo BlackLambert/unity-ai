@@ -1,6 +1,6 @@
 namespace SBaier.AI
 {
-    public class Action : Node
+    public class Action : NodeBase
     {
         private System.Func<bool> action;
 

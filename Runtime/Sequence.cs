@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SBaier.AI
 {
-    public class Sequence : Node
+    public class Sequence : NodeBase
     {
         private List<Node> _children = new List<Node>();
 

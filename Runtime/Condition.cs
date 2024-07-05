@@ -1,6 +1,6 @@
 namespace SBaier.AI
 {
-    public class Condition : Node
+    public class Condition : NodeBase
     {
         private System.Func<bool> condition;
 

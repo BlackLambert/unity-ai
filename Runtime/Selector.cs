@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace SBaier.AI
 {
-    public class Selector : Node
+    public class Selector : NodeBase
     {
         private readonly List<Node> _children;
         private SelectAction _selectAction;

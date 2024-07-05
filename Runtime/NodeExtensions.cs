@@ -1,12 +1,28 @@
+using System;
 using System.Collections.Generic;
 
 namespace SBaier.AI
 {
     public static class NodeExtensions
     {
-        public static WeightedNode Weighted(this Node baseNode, ReadonlyObservable<Weight> weight)
+        public static WeightedNode Weighted(this Node baseNode, Weighter weighter)
         {
-            return new WeightedNode(baseNode, weight);
+            return new WeightedNode(baseNode, weighter);
+        }
+        
+        public static WeightedNode Weighted(this Node baseNode, Weighter weighter, Node condition)
+        {
+            return new WeightedNode(baseNode, weighter, condition);
+        }
+        
+        public static WeightedNode Weighted(this Node baseNode, float weight)
+        {
+            return new WeightedNode(baseNode, new ConstantValueWeighter(weight));
+        }
+        
+        public static WeightedNode Weighted(this Node baseNode, float weight, Node condition)
+        {
+            return new WeightedNode(baseNode, new ConstantValueWeighter(weight), condition);
         }
 
         public static WeightedSelector With(this WeightedSelector selector, WeightedNode node)
@@ -43,6 +59,24 @@ namespace SBaier.AI
         {
             sequence.AddChildren(nodes);
             return sequence;
+        }
+
+        public static MutableNode WithId(this MutableNode node, int id)
+        {
+            node.Id = id;
+            return node;
+        }
+
+        public static MutableNode WithId<T>(this MutableNode node, T id) where T : Enum
+        {
+            node.Id = Convert.ToInt32(id);
+            return node;
+        }
+
+        public static MutableNode WithName(this MutableNode node, string name)
+        {
+            node.Name = name;
+            return node;
         }
     }
 }

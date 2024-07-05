@@ -24,7 +24,7 @@ namespace SBaier.AI.Samples
         private bool _enemyInRange;
         private int _enemyLife;
 
-        private Selector _selector;
+        private Node _selector;
         private Random _random;
 
         public void Inject(Resolver resolver)
@@ -40,64 +40,87 @@ namespace SBaier.AI.Samples
 
         private void Init()
         {
-            Condition inSightCondition = new Condition(() => _enemyInSight);
-            Condition inRangeCondition = new Condition(() => _enemyInSight && _enemyInRange);
-            Condition enemyDeadCondition = new Condition(() => _enemyInRange && _enemyInSight && _enemyLife <= 0);
-            Condition enemyAliveCondition = new Condition(() => _enemyInRange && _enemyInSight && _enemyLife > 0);
+            Node inSightCondition = new Condition(() => _enemyInSight)
+                .WithId(0)
+                .WithName("Is enemy in sight?");
             
-            Action searchForTarget = new Action(() =>
+            Node inRangeCondition = new Condition(() => _enemyInSight && _enemyInRange)
+                .WithId(1)
+                .WithName("Is enemy in range?");
+            
+            Node enemyDeadCondition = new Condition(() => _enemyInRange && _enemyInSight && _enemyLife <= 0)
+                .WithId(2)
+                .WithName("Is enemy dead?");
+            
+            Node enemyAliveCondition = new Condition(() => _enemyInRange && _enemyInSight && _enemyLife > 0)
+                .WithId(3)
+                .WithName("Is enemy still alive?");
+            
+            Node searchForTarget = new Action(() =>
             {
                 _enemyLife = _random.Next(_minEnemyHealth, _maxEnemyHealth);
                 _enemyInSight = true;
                 _currentActionLog.Value = "Searching for an enemy... Found one!";
                 return true;
-            });
+            }).WithId(10).WithName("Search for target");
             
-            Action runToTarget = new Action(() =>
+            Node runToTarget = new Action(() =>
             {
                 _enemyInRange = true;
                 _currentActionLog.Value = "Running to enemy... He comes in range";
                 return true;
-            });
+            }).WithId(11).WithName("Run towards target");
             
-            Action attackTarget = new Action(() =>
+            Node attackTarget = new Action(() =>
             {
                 _enemyLife -= _damage;
                 string log = $"Attacking Enemy with {_damage}.\n";
                 log += _enemyLife > 0 ? $"The enemy has {_enemyLife} health left" : $"The enemy died.";
                 _currentActionLog.Value = log;
                 return true;
-            });
+            }).WithId(12).WithName("Attack enemy");
             
-            Action returnToPatrol = new Action(() =>
+            Node returnToPatrol = new Action(() =>
             {
                 _enemyInSight = false;
                 _enemyInRange = false;
                 _currentActionLog.Value = "Returning to patrol";
                 return true;
-            });
+            }).WithId(13).WithName("Resume patrol");
 
-            Sequence searchForTargetSequence = new Sequence()
-                .With(searchForTarget);
+            Node searchForTargetSequence = new Sequence()
+                .With(searchForTarget)
+                .WithId(ActionType.SearchForTarget)
+                .WithName("Try searching for target");
             
-            Sequence runToTargetSequence = new Sequence()
+            Node runToTargetSequence = new Sequence()
                 .With(inSightCondition)
-                .With(runToTarget);
+                .With(runToTarget)
+                .WithId(ActionType.RunToTarget)
+                .WithName("Try running towards target");
             
-            Sequence attackSequence = new Sequence()
+            Node attackSequence = new Sequence()
                 .With(inRangeCondition)
                 .With(enemyAliveCondition)
-                .With(attackTarget);
+                .With(attackTarget)
+                .WithId(ActionType.Attack)
+                .WithName("Try attacking target");
             
-            Sequence returnToPatrolSequence = new Sequence()
+            Node returnToPatrolSequence = new Sequence()
                 .With(enemyDeadCondition)
-                .With(returnToPatrol);
+                .With(returnToPatrol)
+                .WithId(ActionType.ReturnToPatrol)
+                .WithName("Try resuming patrol");
 
             _selector = new Selector()
                 .With(returnToPatrolSequence)
                 .With(attackSequence)
                 .With(runToTargetSequence)
-                .With(searchForTargetSequence);
+                .With(searchForTargetSequence)
+                .WithId(1000)
+                .WithName("Guard actions");
+            
+            Debug.Log(_selector);
         }
 
         public override void Act()
@@ -106,6 +129,14 @@ namespace SBaier.AI.Samples
             {
                 Debug.LogError("The agent can't perform any action");
             }
+        }
+        
+        public enum ActionType
+        {
+            SearchForTarget = 100,
+            RunToTarget = 101,
+            Attack = 102,
+            ReturnToPatrol = 103
         }
     }
 }

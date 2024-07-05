@@ -1,14 +1,28 @@
 namespace SBaier.AI
 {
-    public class WeightedNode : Node
+    public class WeightedNode : NodeBase
     {
-        public ReadonlyObservable<Weight> Weight { get; private set; }
+        public float Weight { get; private set; } = 0;
         private readonly Node _baseNode;
+        private readonly Node _condition;
+        private readonly Weighter _weighter;
         
-        public WeightedNode(Node baseNode, ReadonlyObservable<Weight> weight)
+        public WeightedNode(Node baseNode, Weighter weighter)
         {
             _baseNode = baseNode;
-            Weight = weight;
+            _weighter = weighter;
+        }
+        
+        public WeightedNode(Node baseNode, Weighter weighter, Node condition)
+            : this(baseNode, weighter)
+        {
+            _condition = condition;
+        }
+
+        public void UpdateWeight()
+        {
+            bool useWeight = _condition == null || _condition.Execute();
+            Weight = useWeight ? _weighter.GetWeight() : float.MinValue;
         }
         
         public override bool Execute()

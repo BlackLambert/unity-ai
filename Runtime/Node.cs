@@ -1,7 +1,9 @@
 namespace SBaier.AI
 {
-    public abstract class Node
+    public interface Node
     {
-        public abstract bool Execute();
+        int Id { get; }
+        string Name { get; }
+        bool Execute();
     }
 }
