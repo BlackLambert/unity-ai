@@ -18,10 +18,13 @@ namespace SBaier.AI.Samples
         private float _actionDuration;
 
         private ReadonlyObservable<string> _actionLog;
+        private MutableLog _log;
+        private int _actionsAmount = 0;
         
         public void Inject(Resolver resolver)
         {
             _actionLog = resolver.Resolve<ReadonlyObservable<string>>();
+            _log = resolver.Resolve<MutableLog>();
         }
         
         public void Initialize()
@@ -38,6 +41,8 @@ namespace SBaier.AI.Samples
 
         private IEnumerator Act()
         {
+            _actionsAmount++;
+            _log.SetHeader($"<b>{_actionsAmount}. Guard actions log</b>");
             _agent.Act();
             yield return new WaitForSeconds(_actionDuration);
             StartCoroutine(Act());

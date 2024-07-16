@@ -21,5 +21,10 @@ namespace SBaier.AI
         {
             return _children.All(child => child.Execute());
         }
+
+        public override string GetInfo()
+        {
+            return $"Sequence '{Name}'";
+        }
     }
 }

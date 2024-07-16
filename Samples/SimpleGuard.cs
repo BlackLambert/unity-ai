@@ -26,11 +26,13 @@ namespace SBaier.AI.Samples
 
         private Node _selector;
         private Random _random;
+        private MutableLog _log;
 
         public void Inject(Resolver resolver)
         {
             _random = new Random();
             _currentActionLog = resolver.Resolve<Observable<string>>();
+            _log = resolver.Resolve<MutableLog>();
         }
 
         public void Initialize()
@@ -42,19 +44,23 @@ namespace SBaier.AI.Samples
         {
             Node inSightCondition = new Condition(() => _enemyInSight)
                 .WithId(0)
-                .WithName("Is enemy in sight?");
+                .WithName("Is enemy in sight?")
+                .Logged(_log);
             
             Node inRangeCondition = new Condition(() => _enemyInSight && _enemyInRange)
                 .WithId(1)
-                .WithName("Is enemy in range?");
+                .WithName("Is enemy in range?")
+                .Logged(_log);
             
             Node enemyDeadCondition = new Condition(() => _enemyInRange && _enemyInSight && _enemyLife <= 0)
                 .WithId(2)
-                .WithName("Is enemy dead?");
+                .WithName("Is enemy dead?")
+                .Logged(_log);
             
             Node enemyAliveCondition = new Condition(() => _enemyInRange && _enemyInSight && _enemyLife > 0)
                 .WithId(3)
-                .WithName("Is enemy still alive?");
+                .WithName("Is enemy still alive?")
+                .Logged(_log);
             
             Node searchForTarget = new Action(() =>
             {
@@ -62,14 +68,14 @@ namespace SBaier.AI.Samples
                 _enemyInSight = true;
                 _currentActionLog.Value = "Searching for an enemy... Found one!";
                 return true;
-            }).WithId(10).WithName("Search for target");
+            }).WithId(10).WithName("Search for target").Logged(_log);
             
             Node runToTarget = new Action(() =>
             {
                 _enemyInRange = true;
                 _currentActionLog.Value = "Running to enemy... He comes in range";
                 return true;
-            }).WithId(11).WithName("Run towards target");
+            }).WithId(11).WithName("Run towards target").Logged(_log);
             
             Node attackTarget = new Action(() =>
             {
@@ -78,7 +84,7 @@ namespace SBaier.AI.Samples
                 log += _enemyLife > 0 ? $"The enemy has {_enemyLife} health left" : $"The enemy died.";
                 _currentActionLog.Value = log;
                 return true;
-            }).WithId(12).WithName("Attack enemy");
+            }).WithId(12).WithName("Attack enemy").Logged(_log);
             
             Node returnToPatrol = new Action(() =>
             {
@@ -86,31 +92,35 @@ namespace SBaier.AI.Samples
                 _enemyInRange = false;
                 _currentActionLog.Value = "Returning to patrol";
                 return true;
-            }).WithId(13).WithName("Resume patrol");
+            }).WithId(13).WithName("Resume patrol").Logged(_log);
 
             Node searchForTargetSequence = new Sequence()
                 .With(searchForTarget)
                 .WithId(ActionType.SearchForTarget)
-                .WithName("Try searching for target");
+                .WithName("Try searching for target")
+                .Logged(_log);
             
             Node runToTargetSequence = new Sequence()
                 .With(inSightCondition)
                 .With(runToTarget)
                 .WithId(ActionType.RunToTarget)
-                .WithName("Try running towards target");
+                .WithName("Try running towards target")
+                .Logged(_log);
             
             Node attackSequence = new Sequence()
                 .With(inRangeCondition)
                 .With(enemyAliveCondition)
                 .With(attackTarget)
                 .WithId(ActionType.Attack)
-                .WithName("Try attacking target");
+                .WithName("Try attacking target")
+                .Logged(_log);
             
             Node returnToPatrolSequence = new Sequence()
                 .With(enemyDeadCondition)
                 .With(returnToPatrol)
                 .WithId(ActionType.ReturnToPatrol)
-                .WithName("Try resuming patrol");
+                .WithName("Try resuming patrol")
+                .Logged(_log);
 
             _selector = new Selector()
                 .With(returnToPatrolSequence)
@@ -118,9 +128,9 @@ namespace SBaier.AI.Samples
                 .With(runToTargetSequence)
                 .With(searchForTargetSequence)
                 .WithId(1000)
-                .WithName("Guard actions");
-            
-            Debug.Log(_selector);
+                .WithName("Guard actions")
+                .Logged(_log)
+                .ConsoleLogged(_log);
         }
 
         public override void Act()

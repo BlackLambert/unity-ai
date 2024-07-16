@@ -5,5 +5,6 @@ namespace SBaier.AI
         int Id { get; }
         string Name { get; }
         bool Execute();
+        string GetInfo();
     }
 }

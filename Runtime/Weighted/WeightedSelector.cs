@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace SBaier.AI
 {
@@ -28,6 +30,17 @@ namespace SBaier.AI
             UpdateWeight();
             _children.Sort(CompareWeight);
             return _selectAction.Run();
+        }
+                
+        public override string GetInfo()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"Weighted Selector '{Name}'");
+            foreach (WeightedNode child in _children.OrderByDescending(node => node.Weight))
+            {
+                builder.Append($"\nChild Node '{child.Name}' (Weight: {child.Weight})");
+            }
+            return builder.ToString();
         }
 
         private void UpdateWeight()

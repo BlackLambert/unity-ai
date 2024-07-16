@@ -10,6 +10,10 @@ namespace SBaier.AI.Samples
                 .And<Observable<string>>()
                 .ToNew<Observable<string>>()
                 .AsSingle();
+            binder.Bind<Log>()
+                .And<MutableLog>()
+                .ToNew<BasicLog>()
+                .AsSingle();
         }
     }
 }

@@ -29,5 +29,10 @@ namespace SBaier.AI
         {
             return _baseNode.Execute();
         }
+                
+        public override string GetInfo()
+        {
+            return $"{Name} (Weight: {Weight:F2})";
+        }
     }
 }

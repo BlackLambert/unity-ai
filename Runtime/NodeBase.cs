@@ -7,6 +7,11 @@ namespace SBaier.AI
         public int Id { get; set; } = 0;
         public string Name { get; set; } = string.Empty;
         public abstract bool Execute();
+        
+        public virtual string GetInfo()
+        {
+            return $"{Name}";
+        }
 
         public bool Equals(Node other)
         {

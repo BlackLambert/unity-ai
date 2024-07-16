@@ -78,5 +78,19 @@ namespace SBaier.AI
             node.Name = name;
             return node;
         }
+
+        public static Node Logged(this Node node, Log log, bool enabled = true)
+        {
+            LoggerNode result = new LoggerNode(log, node);
+            result.EnableLogging(enabled);
+            return result;
+        }
+
+        public static Node ConsoleLogged(this Node node, MutableLog log, bool enabled = true)
+        {
+            ConsoleLoggerNode result = new ConsoleLoggerNode(node, log);
+            result.EnableLogging(enabled);
+            return result;
+        }
     }
 }

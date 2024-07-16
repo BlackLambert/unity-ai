@@ -13,5 +13,10 @@ namespace SBaier.AI
         {
             return action();
         }
+
+        public override string GetInfo()
+        {
+            return $"Action '{Name}'";
+        }
     }
 }

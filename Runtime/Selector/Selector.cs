@@ -27,5 +27,10 @@ namespace SBaier.AI
         {
             return _selectAction.Run();
         }
+
+        public override string GetInfo()
+        {
+            return $"Selector '{Name}'";
+        }
     }
 }

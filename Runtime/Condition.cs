@@ -13,5 +13,10 @@ namespace SBaier.AI
         {
             return condition();
         }
+
+        public override string GetInfo()
+        {
+            return $"Condition '{Name}'";
+        }
     }
 }
