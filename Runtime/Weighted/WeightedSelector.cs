@@ -38,7 +38,7 @@ namespace SBaier.AI
             builder.Append($"Weighted Selector '{Name}'");
             foreach (WeightedNode child in _children.OrderByDescending(node => node.Weight))
             {
-                builder.Append($"\nChild Node '{child.Name}' (Weight: {child.Weight})");
+                builder.Append($"\nChild Node '{child.Name}' (Weight: {child.Weight:F2})");
             }
             return builder.ToString();
         }

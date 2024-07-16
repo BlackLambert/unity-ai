@@ -42,7 +42,7 @@ namespace SBaier.AI
             for (int index = 0; index < _entries.Count; index++)
             {
                 LogEntry entry = _entries[index];
-                builder.Append($"\n{index + 1}. {entry}");
+                builder.Append($"\n- {entry}");
             }
 
             return builder.ToString();
