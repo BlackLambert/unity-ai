@@ -1,12 +1,12 @@
 {
   "name": "com.sbaier.ai",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "displayName": "Unity AI",
   "description": "AI logic",
   "unity": "2021.2",
   "unityRelease": "",
   "documentationUrl": "https://github.com/BlackLambert/unity-ai",
-  "changelogUrl": "https://github.com/BlackLambert/unity-ai/releases/tag/v1.1.0",
+  "changelogUrl": "https://github.com/BlackLambert/unity-ai/releases/tag/v1.1.1",
   "licensesUrl": "",
   "dependencies": {
     "com.sbaier.unitydi": "https://github.com/BlackLambert/unity-di-package.git#v1.4.3",
