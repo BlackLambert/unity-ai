@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SBaier.DI;
 using UnityEngine;
 using Random = System.Random;
@@ -93,11 +94,29 @@ namespace SBaier.AI.Samples
                 _currentActionLog.Value = "Returning to patrol";
                 return true;
             }).WithId(13).WithName("Resume patrol").Logged(_log);
+            
+            Node idle = new Action(() =>
+            {
+                _currentActionLog.Value = "Idling around.";
+                return true;
+            }).WithId(14).WithName("Idle").Logged(_log);
+            
+            Node daydreaming = new Action(() =>
+            {
+                _currentActionLog.Value = "Daydreaming.";
+                return true;
+            }).WithId(15).WithName("Daydreaming").Logged(_log);
 
-            Node searchForTargetSequence = new Sequence()
-                .With(searchForTarget)
+            List<Node> defaultActions = new List<Node>() { idle, searchForTarget, daydreaming };
+            Node defaultActionSelector = new Selector(defaultActions, new RandomSelectAction(defaultActions, _random))
+                .WithId(50)
+                .WithName("Default action selector")
+                .Logged(_log);
+
+            Node defaultActionSequence = new Sequence()
+                .With(defaultActionSelector)
                 .WithId(ActionType.SearchForTarget)
-                .WithName("Try searching for target")
+                .WithName("Try execute default action")
                 .Logged(_log);
             
             Node runToTargetSequence = new Sequence()
@@ -119,14 +138,14 @@ namespace SBaier.AI.Samples
                 .With(enemyDeadCondition)
                 .With(returnToPatrol)
                 .WithId(ActionType.ReturnToPatrol)
-                .WithName("Try resuming patrol")
+                .WithName("Try execute default action")
                 .Logged(_log);
 
             _selector = new Selector()
                 .With(returnToPatrolSequence)
                 .With(attackSequence)
                 .With(runToTargetSequence)
-                .With(searchForTargetSequence)
+                .With(defaultActionSequence)
                 .WithId(1000)
                 .WithName("Guard actions")
                 .Logged(_log)

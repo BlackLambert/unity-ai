@@ -13,6 +13,25 @@ namespace SBaier.AI
             _selectAction = new BasicSelectAction(_children);
         }
 
+        public Selector(IEnumerable<Node> children) : this()
+        {
+            _children = new List<Node>(children);
+            _selectAction = new BasicSelectAction(_children);
+        }
+
+        public Selector(SelectAction selectAction) : this()
+        {
+            _children = new List<Node>();
+            _selectAction = selectAction;
+        }
+
+        public Selector(IEnumerable<Node> children,
+            SelectAction selectAction)
+        {
+            _children = new List<Node>(children);
+            _selectAction = selectAction;
+        }
+
         public void AddChild(Node child)
         {
             _children.Add(child);
